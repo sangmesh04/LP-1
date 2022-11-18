@@ -59,25 +59,31 @@ public:
         }
         int ctime = 0;
         for(int i=0;i<100;i++){
-            process *x = NULL;
-
-            for(int j=0;j<=ctime;j++){
-                if(processArr[j] != NULL && processArr[j]->isComplete == false){
-                    x = processArr[j];
-                    break;
-                }
-            }
-
-            if(x==NULL){
+                process *x = NULL;
                 for(int j=0;j<=i;j++){
                     if(processArr[j] != NULL && processArr[j]->isComplete == false){
                         x = processArr[j];
-                        break;
+                        if(x->burstTime>=quantum){
+                            x->burstTime -= quantum;
+                            ctime += quantum;
+                            i += quantum;
+                        }else{
+                            ctime += x->burstTime;
+                            x->burstTime = 0;
+                        }
+                        if(x->burstTime==0){
+                            x->isComplete = true;
+                            cout<<"Turn around time: "<<ctime-(x->arrTime)<<endl;
+                            cout<<"Waiting time: "<<ctime-(x->arrTime)-(x->burstTime)<<endl;
+                        }
+                        cout<<"\nProcess "<<x->name<<": "<<endl;
+                        cout<<"Arrival time: "<<x->arrTime<<endl;
+                        cout<<"Burst time: "<<x->burstTime<<endl;
                     }
                 }
-            }
+        }
 
-            if(x != NULL && x->isComplete == false){
+          /*  if(x != NULL && x->isComplete == false){
                 if(x->burstTime>=quantum){
                     x->burstTime -= quantum;
                     ctime += quantum;
@@ -94,7 +100,7 @@ public:
                 cout<<"Arrival time: "<<x->arrTime<<endl;
                 cout<<"Burst time: "<<x->burstTime<<endl;
             }
-        }
+            */
         }
 
         void sjf(){
